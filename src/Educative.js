@@ -2,11 +2,15 @@ import "./Educative.css";
 import React from "react";
 import { useState, useEffect } from "react";
 import { Clock } from "./Jam";
+import { SW } from "./Stopwatch";
+import styled from "styled-components";
 
-const List = ({ list }) =>
-  list.map(({ objectID, ...others }) => <Item key={objectID} item={others} />);
+const List = ({ list, removeList }) =>
+  list.map((list) => (
+    <Item key={list.objectID} item={list} removeList={removeList} />
+  ));
 
-const Item = ({ item }) => (
+const Item = ({ item, removeList }) => (
   <div>
     <ul>
       <li>
@@ -16,6 +20,7 @@ const Item = ({ item }) => (
       <li>{item.num_comments}</li>
       <li>{item.points}</li>
     </ul>
+    <button onClick={() => removeList(item.objectID)}>remove</button>
   </div>
 );
 
@@ -61,25 +66,40 @@ const Educative = () => {
     },
   ];
 
-  const [searchTerm, setSearchTerm] = useSemiPersistentState("search", "React");
+  const [story, setStory] = useState(stories);
+  const [searchTerm, setSearchTerm] = useSemiPersistentState("search", "");
 
   const handleSearch = (ev) => {
     setSearchTerm(ev.target.value);
   };
 
-  const searchStories = stories.filter((story) =>
+  const searchStories = story.filter((story) =>
     story.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const removeList = (id) => {
+    const newList = story.filter((list) => list.objectID !== id);
+    setStory(newList);
+  };
+
   return (
     <div>
-      <Clock>time: </Clock>
+      <FlexDiv>
+        <Clock>time: </Clock>
+        <SW />
+      </FlexDiv>
       <h1>My Hacker Stories</h1>
       <Search handleSearch={handleSearch}>{searchTerm}</Search>
       <hr />
-      <List list={searchStories} />
+      <List list={searchStories} removeList={removeList} />
     </div>
   );
 };
 
 export default Educative;
+
+const FlexDiv = styled("div")`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+`;
