@@ -30,6 +30,17 @@ const Search = ({ handleSearch, children }) => (
   </div>
 );
 
+//custom hook
+const useSemiPersistentState = (key, initialState) => {
+  const [value, setValue] = useState(localStorage.getItem(key) || initialState);
+
+  useEffect(() => {
+    localStorage.setItem(key, value);
+  }, [value, key]);
+
+  return [value, setValue];
+};
+
 const Educative = () => {
   const stories = [
     {
@@ -50,13 +61,7 @@ const Educative = () => {
     },
   ];
 
-  const [searchTerm, setSearchTerm] = useState(
-    localStorage.getItem("search") || ""
-  );
-
-  useEffect(() => {
-    localStorage.setItem("search", searchTerm);
-  }, [searchTerm]);
+  const [searchTerm, setSearchTerm] = useSemiPersistentState("search", "React");
 
   const handleSearch = (ev) => {
     setSearchTerm(ev.target.value);
