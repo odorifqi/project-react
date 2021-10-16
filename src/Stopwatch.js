@@ -18,19 +18,26 @@ export const SW = () => {
     let ms;
     if (isOn) {
       ms = setInterval(() => setMSec((mSec) => mSec + 1), 10);
-      if (sec === 59) {
-        setSec(0);
-        setMin((min) => min + 1);
-      }
-      if (mSec === 99) {
-        setMSec(0);
-        setSec((sec) => sec + 1);
-      }
     }
-    return () => {
-      clearInterval(ms);
-    };
-  }, [mSec, sec, isOn]);
+    if (mSec === 100) {
+      setMSec(0);
+    }
+
+    return () => clearInterval(ms);
+  }, [mSec, isOn]);
+
+  useEffect(() => {
+    let s;
+    if (isOn) {
+      s = setInterval(() => setSec((sec) => sec + 1), 1000);
+    }
+    if (sec === 60) {
+      setSec(0);
+      setMin((min) => min + 1);
+    }
+
+    return () => clearInterval(s);
+  }, [sec, isOn]);
 
   return (
     <div>

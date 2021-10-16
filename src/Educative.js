@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Clock } from "./Jam";
 import { SW } from "./Stopwatch";
 import styled from "styled-components";
+import { ReactForm } from "./FormComposed";
 
 const List = ({ list, removeList }) =>
   list.map((list) => (
@@ -87,6 +88,7 @@ const Educative = () => {
       <FlexDiv>
         <Clock>time: </Clock>
         <SW />
+        <ReactForm />
       </FlexDiv>
       <h1>My Hacker Stories</h1>
       <Search handleSearch={handleSearch}>{searchTerm}</Search>
