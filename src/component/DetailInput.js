@@ -1,5 +1,3 @@
-// import { useState, useEffect } from "react";
-
 export const DetailInput = ({ getPrice }) => {
   const handleResult = (e) => {
     e.preventDefault();
