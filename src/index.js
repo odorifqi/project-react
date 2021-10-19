@@ -2,13 +2,13 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-// import App from "./App";
-import Educative from "./Educative";
+import App from "./App";
+// import Educative from "./Educative";
 // import Converter from "./Converter";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Educative />
+    <App />
   </React.StrictMode>,
   document.getElementById("root")
 );

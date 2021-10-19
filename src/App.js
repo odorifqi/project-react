@@ -1,145 +1,57 @@
 import "./App.css";
-import React from "react";
-
-const Tanggal = () => {
-  const tgl = new Date();
-  const months = [
-    "Januari",
-    "Februari",
-    "Maret",
-    "April",
-    "Mei",
-    "Juni",
-    "Juli",
-    "Agustus",
-    "September",
-    "Oktober",
-    "November",
-    "Desember",
-  ];
-  const day = ["Minggu", "Senin", "Selasa", "Rabu", " Kamis", "Jumat", "Sabtu"];
-
-  return (
-    <p>
-      Tanggal:{" "}
-      <strong>
-        {day[tgl.getDay()]}, {tgl.getDate()} {months[tgl.getMonth()]}{" "}
-        {tgl.getFullYear()}{" "}
-      </strong>
-    </p>
-  );
-};
-
-const Button = ({ btnName, children }) => {
-  return <button type="button">{btnName || children}</button>;
-};
-
-const InputPerson = () => (
-  <div class="person-div focus">
-    <input
-      id="nameLabel_0"
-      className="name-label"
-      placeholder="nama"
-      type="text"
-    />
-    <br />
-    <input
-      type="text"
-      name="value"
-      id="person_0"
-      placeholder="10, 25, 31, ..."
-    />
-    <Button btnName="submit" />
-    <p></p>
-  </div>
-);
-
-const DetailInput = () => {
-  return (
-    <div>
-      <h2>Rincian</h2>
-      <form action="">
-        <p class="highlight">Harga per kg(Rp)</p>
-        <div class="detail-input-div">
-          <input
-            type="number"
-            name="price"
-            id="price"
-            placeholder="ex:11000"
-            required
-          />
-        </div>
-        <p class="highlight">Persentase (%)</p>
-        <div class="detail-input-div">
-          <input
-            type="number"
-            name="percent"
-            id="percent"
-            placeholder="ex:50"
-            required
-          />
-        </div>
-        <input
-          id="detailBtn"
-          type="submit"
-          value="submit"
-          onclick="detailResult()"
-        />
-      </form>
-    </div>
-  );
-};
-
-const DetailResult = () => {
-  return (
-    <div id="detail-result-div">
-      <SubDR>Hasil total</SubDR>
-      <SubDR>Pendapatan</SubDR>
-      <SubDR>Pendapatan per pihak</SubDR>
-    </div>
-  );
-};
-
-const SubDR = ({ children }) => (
-  <div>
-    <p class="highlight">{children}</p>
-    <div class="sub-result-div">
-      <p id="priceTotal" class="result-text"></p>
-    </div>
-  </div>
-);
-
-//slot pattern
-const Frame = ({ ...data }) => {
-  const { tanggal, title, addBtn, inputPerson, total } = data;
-  return (
-    <div>
-      {tanggal}
-      <div className="main-div">
-        {title}
-        <div className="clearfix">{addBtn}</div>
-        {inputPerson}
-        {total}
-      </div>
-    </div>
-  );
-};
+import { useState, useEffect } from "react";
+import { DateToday } from "./component/Date";
+import { DetailInput } from "./component/DetailInput";
+import { DetailResult } from "./component/DetailResult";
+import { InputPerson } from "./component/InputPerson";
+import { Button } from "./component/Button";
 
 const App = () => {
-  const title = <em>COMMALATOR</em>;
+  const [personNumber, setpersonNumber] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [price, setPrice] = useState({ perkg: 0, percent: 0 });
+  const [personData, setPersonData] = useState({});
+
+  const getPrice = (e) => {
+    setPrice({ perkg: e.target[0].value, percent: e.target[1].value });
+  };
+
+  const getPersonData = (x, name, val) => {
+    setPersonData((prev) => ({ ...prev, [x]: { id: name, value: val } }));
+  };
+
+  useEffect(() => {
+    console.log("app");
+    let total = 0;
+    for (const i in personData) {
+      total += parseInt(personData[i]["value"]);
+    }
+    setTotal(() => total);
+  }, [personData, setTotal]);
 
   return (
-    <div className="main-div">
-      <Frame
-        tanggal={<Tanggal />}
-        title={<h1>Welcome to {title}</h1>}
-        addBtn={<Button btnName="add" />}
-        inputPerson={<InputPerson />}
-        total={<p id="total">TOTAL</p>}
-      />
-      <DetailInput />
-      <DetailResult />
-    </div>
+    <>
+      <div className="yellowed">
+        <h1>COMMALATOR</h1>
+        <DateToday />
+      </div>
+      <div id="main">
+        <div className="main-div">
+          <div className="clearfix">
+            <Button handleClick={() => setpersonNumber((x) => x + 1)}>+</Button>
+          </div>
+          <InputPerson
+            personNumber={personNumber}
+            getPersonData={getPersonData}
+          />
+          <h2>Total: {total} kg</h2>
+        </div>
+        <div className="main-div">
+          <DetailInput getPrice={getPrice} />
+          <DetailResult price={price} total={total} personData={personData} />
+        </div>
+      </div>
+    </>
   );
 };
 
