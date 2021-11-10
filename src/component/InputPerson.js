@@ -2,7 +2,7 @@ import { Button } from "./Button";
 import { useEffect, useReducer } from "react";
 
 const PersonObj = ({ i, addList, removeList, removePerson }) => {
-  const [person, dispatchPerson] = useReducer(personReducer, {
+  const [personObj, dispatchPerson] = useReducer(personObjReducer, {
     name: "",
     input: "",
     value: 0,
@@ -12,7 +12,7 @@ const PersonObj = ({ i, addList, removeList, removePerson }) => {
     dispatchPerson({
       type: "SET_VALUE",
       payload: () => {
-        const val = person.input
+        const val = personObj.input
           .split(",")
           .reduce((t, v) => parseInt(t) + parseInt(v));
         return isNaN(val) ? alert("not a number") : val;
@@ -33,12 +33,11 @@ const PersonObj = ({ i, addList, removeList, removePerson }) => {
   }
 
   useEffect(() => {
-    console.log("addlist");
-    if (person.value) {
-      addList(i, person.name, person.value);
+    if (personObj.value) {
+      addList(i, personObj.name, personObj.value);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [person.name, person.value]);
+  }, [personObj.name, personObj.value]);
 
   return (
     <div className="person-div focus">
@@ -47,7 +46,7 @@ const PersonObj = ({ i, addList, removeList, removePerson }) => {
         className="name-label"
         placeholder="nama"
         type="text"
-        value={person.name}
+        value={personObj.name}
         onChange={handleName}
       />
       <Button
@@ -61,21 +60,23 @@ const PersonObj = ({ i, addList, removeList, removePerson }) => {
         name="value"
         id={"value_" + i}
         placeholder="10, 25, 31, ..."
-        value={person.input}
+        value={personObj.input}
         onChange={handleInput}
       />
       <Button btnName="submit" handleClick={sum} />
-      <p>{person.value} kg</p>
+      <p>{personObj.value} kg</p>
     </div>
   );
 };
 
-function personReducer(state, action) {
+function personObjReducer(state, action) {
   switch (action.type) {
     case "SET_NAME":
       return { ...state, name: action.payload };
+
     case "SET_INPUT":
       return { ...state, input: action.payload };
+
     case "SET_VALUE":
       return { ...state, value: action.payload() };
 
@@ -85,7 +86,7 @@ function personReducer(state, action) {
 }
 
 export const InputPerson = ({ addList, removeList }) => {
-  const [person, dispatch] = useReducer(reducer, [{ key: 0 }]);
+  const [personList, dispatch] = useReducer(listReducer, [{ key: 0 }]);
 
   function handleAddList(x, name, val) {
     addList(x, name, val);
@@ -108,7 +109,7 @@ export const InputPerson = ({ addList, removeList }) => {
       <div className="clearfix">
         <Button handleClick={addPerson}>+</Button>
       </div>
-      {person.map((p) => (
+      {personList.map((p) => (
         <PersonObj
           key={p.key}
           i={p.key}
@@ -121,7 +122,7 @@ export const InputPerson = ({ addList, removeList }) => {
   );
 };
 
-function reducer(state, action) {
+function listReducer(state, action) {
   switch (action.type) {
     case "ADD":
       let sleng = state.length;
@@ -131,6 +132,7 @@ function reducer(state, action) {
           key: sleng !== 0 ? state[sleng - 1].key + 1 : sleng,
         },
       ];
+
     case "REMOVE":
       return state.filter(
         (s) => state[state.indexOf(s)].key !== action.payload

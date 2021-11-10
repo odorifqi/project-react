@@ -20,7 +20,6 @@ const App = () => {
     dispatchData({
       type: "SET_PERSON_DATA",
       payload: { id: x, name: name, value: val },
-      id: x,
     });
   }
 
@@ -67,9 +66,6 @@ export default App;
 
 function dataReducer(state, action) {
   switch (action.type) {
-    case "SET_PERSON_NUMBER":
-      return { ...state, personNumber: action.payload };
-
     case "SET_TOTAL":
       return { ...state, total: action.payload };
 
@@ -87,7 +83,7 @@ function dataReducer(state, action) {
         ...state,
         personData: {
           ...state.personData,
-          [action.id]: action.payload,
+          [action.payload.id]: action.payload,
         },
       };
 
