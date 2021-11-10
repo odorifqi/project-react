@@ -19,7 +19,7 @@ const App = () => {
   function addList(x, name, val) {
     dispatchData({
       type: "SET_PERSON_DATA",
-      payload: { name: name, value: val },
+      payload: { id: x, name: name, value: val },
       id: x,
     });
   }
@@ -47,11 +47,7 @@ const App = () => {
       </div>
       <div id="main">
         <div className="main-div">
-          <InputPerson
-            personNumber={data.personNumber}
-            addList={addList}
-            removeList={removeList}
-          />
+          <InputPerson addList={addList} removeList={removeList} />
           <h2>Total: {data.total} kg</h2>
         </div>
         <div className="main-div">
@@ -98,12 +94,18 @@ function dataReducer(state, action) {
     case "REMOVE_PERSON_DATA":
       return {
         ...state,
-        personData: state.personData.filter((s) => {
-          return state.personData.indexOf(s) !== action.payload;
-        }),
+        personData: Object.filter(
+          state.personData,
+          (s) => s.id !== action.payload
+        ),
       };
 
     default:
       throw new Error();
   }
 }
+
+Object.filter = (obj, predicate) =>
+  Object.keys(obj)
+    .filter((key) => predicate(obj[key]))
+    .reduce((res, key) => Object.assign(res, { [key]: obj[key] }), {});

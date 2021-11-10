@@ -124,9 +124,17 @@ export const InputPerson = ({ addList, removeList }) => {
 function reducer(state, action) {
   switch (action.type) {
     case "ADD":
-      return [...state, { key: state.length }];
+      let sleng = state.length;
+      return [
+        ...state,
+        {
+          key: sleng !== 0 ? state[sleng - 1].key + 1 : sleng,
+        },
+      ];
     case "REMOVE":
-      return state.filter((s) => s.key !== action.payload);
+      return state.filter(
+        (s) => state[state.indexOf(s)].key !== action.payload
+      );
 
     default:
       throw new Error();
