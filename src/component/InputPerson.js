@@ -1,26 +1,43 @@
 import { Button } from "./Button";
-import { useState, useEffect } from "react";
+import { useEffect, useReducer } from "react";
 
-const PersonObj = ({ i, setValue }) => {
-  const [personName, setPersonName] = useState("");
-  const [personInput, setPersonInput] = useState("");
-  const [personValue, setPersonValue] = useState(0);
+const PersonObj = ({ i, addList, removeList, removePerson }) => {
+  const [person, dispatchPerson] = useReducer(personReducer, {
+    name: "",
+    input: "",
+    value: 0,
+  });
 
-  const sum = () => {
-    setPersonValue(() => {
-      const val = personInput
-        .split(",")
-        .reduce((t, v) => parseInt(t) + parseInt(v));
-      return isNaN(val) ? alert("not a number") : val;
+  function sum() {
+    dispatchPerson({
+      type: "SET_VALUE",
+      payload: () => {
+        const val = person.input
+          .split(",")
+          .reduce((t, v) => parseInt(t) + parseInt(v));
+        return isNaN(val) ? alert("not a number") : val;
+      },
     });
-  };
+  }
+
+  function handleName(e) {
+    dispatchPerson({ type: "SET_NAME", payload: e.target.value });
+  }
+  function handleInput(e) {
+    dispatchPerson({ type: "SET_INPUT", payload: e.target.value });
+  }
+
+  function handleRemove(i) {
+    removePerson(i);
+    removeList(i);
+  }
 
   useEffect(() => {
-    if (personValue || personName) {
-      setValue(i, personName, personValue);
+    if (person.value) {
+      addList(i, person.name, person.value);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [personName, personValue]);
+  }, [person.name, person.value]);
 
   return (
     <div className="person-div focus">
@@ -29,8 +46,13 @@ const PersonObj = ({ i, setValue }) => {
         className="name-label"
         placeholder="nama"
         type="text"
-        value={personName}
-        onChange={(e) => setPersonName(e.target.value)}
+        value={person.name}
+        onChange={handleName}
+      />
+      <Button
+        className="clearfix"
+        btnName="x"
+        handleClick={() => handleRemove(i)}
       />
       <br />
       <input
@@ -38,25 +60,74 @@ const PersonObj = ({ i, setValue }) => {
         name="value"
         id={"value_" + i}
         placeholder="10, 25, 31, ..."
-        value={personInput}
-        onChange={(e) => setPersonInput(e.target.value)}
+        value={person.input}
+        onChange={handleInput}
       />
       <Button btnName="submit" handleClick={sum} />
-      <p>{personValue} kg</p>
+      <p>{person.value} kg</p>
     </div>
   );
 };
 
-export const InputPerson = ({ personNumber, getPersonData }) => {
-  const person = [personNumber];
+function personReducer(state, action) {
+  switch (action.type) {
+    case "SET_NAME":
+      return { ...state, name: action.payload };
+    case "SET_INPUT":
+      return { ...state, input: action.payload };
+    case "SET_VALUE":
+      return { ...state, value: action.payload() };
 
-  const setValue = (x, name, val) => {
-    getPersonData(x, name, val);
-  };
+    default:
+      throw new Error();
+  }
+}
 
-  for (let i = 0; i < personNumber; i++) {
-    person[i] = <PersonObj key={i} i={i} setValue={setValue} />;
+export const InputPerson = ({ addList, removeList }) => {
+  const [person, dispatch] = useReducer(reducer, [{ key: 0 }]);
+
+  function handleAddList(x, name, val) {
+    addList(x, name, val);
   }
 
-  return person;
+  function handleRemoveList(x) {
+    removeList(x);
+  }
+
+  function addPerson() {
+    dispatch({ type: "ADD" });
+  }
+
+  function removePerson(index) {
+    dispatch({ type: "REMOVE", payload: index });
+  }
+
+  return (
+    <>
+      <div className="clearfix">
+        <Button handleClick={addPerson}>+</Button>
+      </div>
+      {person.map((p) => (
+        <PersonObj
+          key={p.key}
+          i={p.key}
+          addList={handleAddList}
+          removeList={handleRemoveList}
+          removePerson={removePerson}
+        />
+      ))}
+    </>
+  );
 };
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "ADD":
+      return [...state, { key: state.length }];
+    case "REMOVE":
+      return state.filter((s) => s.key !== action.payload);
+
+    default:
+      throw new Error();
+  }
+}

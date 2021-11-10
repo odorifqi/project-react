@@ -1,4 +1,4 @@
-export const DetailResult = ({ price, total, personData }) => {
+export function DetailResult({ price, total, personData }) {
   const totalPrice = price.perkg * total;
   const percent = price.percent * 0.01;
   const percentPrice = totalPrice * percent;
@@ -24,27 +24,32 @@ export const DetailResult = ({ price, total, personData }) => {
       </SubDR>
     </div>
   );
-};
+}
 
-const PerPerson = ({ person }) =>
-  person.map((x) => <ListPerson x={x} key={x.key} />);
+function PerPerson({ person }) {
+  return person.map((x) => <ListPerson x={x} key={x.key} />);
+}
 
-const ListPerson = ({ x }) => (
-  <>
-    <span>
-      {x.name || "unknown"}: Rp{x.value.toLocaleString("id-ID")}
-    </span>
-    <br />
-  </>
-);
+function ListPerson({ x }) {
+  return (
+    <>
+      <span>
+        {x.name || "unknown"}: Rp{x.value.toLocaleString("id-ID")}
+      </span>
+      <br />
+    </>
+  );
+}
 
-const SubDR = ({ children, title }) => (
-  <div>
-    <p className="highlight">{title}</p>
-    <div className="sub-result-div">
-      <p id="priceTotal" className="result-text">
-        {children}
-      </p>
+function SubDR({ children, title }) {
+  return (
+    <div>
+      <p className="highlight">{title}</p>
+      <div className="sub-result-div">
+        <p id="priceTotal" className="result-text">
+          {children}
+        </p>
+      </div>
     </div>
-  </div>
-);
+  );
+}

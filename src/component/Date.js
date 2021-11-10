@@ -1,4 +1,4 @@
-export const DateToday = () => {
+export function DateToday() {
   const tgl = new Date();
   const months = [
     "Januari",
@@ -25,4 +25,4 @@ export const DateToday = () => {
       </strong>
     </p>
   );
-};
+}

@@ -1,33 +1,42 @@
 import "./App.css";
-import { useState, useEffect } from "react";
+import { useEffect, useReducer } from "react";
 import { DateToday } from "./component/Date";
 import { DetailInput } from "./component/DetailInput";
 import { DetailResult } from "./component/DetailResult";
 import { InputPerson } from "./component/InputPerson";
-import { Button } from "./component/Button";
 
 const App = () => {
-  const [personNumber, setpersonNumber] = useState(1);
-  const [total, setTotal] = useState(0);
-  const [price, setPrice] = useState({ perkg: 0, percent: 0 });
-  const [personData, setPersonData] = useState({});
+  const [data, dispatchData] = useReducer(dataReducer, {
+    total: 0,
+    price: { perkg: 0, percent: 0 },
+    personData: [],
+  });
 
-  const getPrice = (e) => {
-    setPrice({ perkg: e.target[0].value, percent: e.target[1].value });
-  };
+  function getPrice(e) {
+    dispatchData({ type: "SET_PRICE", payload: e });
+  }
 
-  const getPersonData = (x, name, val) => {
-    setPersonData((prev) => ({ ...prev, [x]: { id: name, value: val } }));
-  };
+  function addList(x, name, val) {
+    dispatchData({
+      type: "SET_PERSON_DATA",
+      payload: [...data.personData, { id: name + "_" + x, value: val }],
+    });
+  }
+
+  function removeList(x) {
+    dispatchData({
+      type: "REMOVE_PERSON_DATA",
+      payload: x,
+    });
+  }
 
   useEffect(() => {
-    console.log("app");
     let total = 0;
-    for (const i in personData) {
-      total += parseInt(personData[i]["value"]);
+    for (const i in data.personData) {
+      total += parseInt(data.personData[i]["value"]);
     }
-    setTotal(() => total);
-  }, [personData, setTotal]);
+    dispatchData({ type: "SET_TOTAL", payload: total });
+  }, [data.personData]);
 
   return (
     <>
@@ -37,18 +46,20 @@ const App = () => {
       </div>
       <div id="main">
         <div className="main-div">
-          <div className="clearfix">
-            <Button handleClick={() => setpersonNumber((x) => x + 1)}>+</Button>
-          </div>
           <InputPerson
-            personNumber={personNumber}
-            getPersonData={getPersonData}
+            personNumber={data.personNumber}
+            addList={addList}
+            removeList={removeList}
           />
-          <h2>Total: {total} kg</h2>
+          <h2>Total: {data.total} kg</h2>
         </div>
         <div className="main-div">
           <DetailInput getPrice={getPrice} />
-          <DetailResult price={price} total={total} personData={personData} />
+          <DetailResult
+            price={data.price}
+            total={data.total}
+            personData={data.personData}
+          />
         </div>
       </div>
     </>
@@ -56,3 +67,32 @@ const App = () => {
 };
 
 export default App;
+
+function dataReducer(state, action) {
+  switch (action.type) {
+    case "SET_PERSON_NUMBER":
+      return { ...state, personNumber: action.payload };
+    case "SET_TOTAL":
+      return { ...state, total: action.payload };
+    case "SET_PRICE":
+      return {
+        ...state,
+        price: {
+          perkg: action.payload.target[0].value,
+          percent: action.payload.target[1].value,
+        },
+      };
+    case "SET_PERSON_DATA":
+      return { ...state, personData: action.payload };
+    case "REMOVE_PERSON_DATA":
+      return {
+        ...state,
+        personData: state.personData.filter((s) => {
+          return state.personData.indexOf(s) !== action.payload;
+        }),
+      };
+
+    default:
+      throw new Error();
+  }
+}

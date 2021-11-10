@@ -1,4 +1,4 @@
-export const DetailInput = ({ getPrice }) => {
+export function DetailInput({ getPrice }) {
   const handleResult = (e) => {
     e.preventDefault();
     getPrice(e);
@@ -32,4 +32,4 @@ export const DetailInput = ({ getPrice }) => {
       </form>
     </div>
   );
-};
+}
