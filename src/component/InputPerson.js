@@ -33,6 +33,7 @@ const PersonObj = ({ i, addList, removeList, removePerson }) => {
   }
 
   useEffect(() => {
+    console.log("addlist");
     if (person.value) {
       addList(i, person.name, person.value);
     }

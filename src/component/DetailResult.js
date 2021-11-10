@@ -8,7 +8,7 @@ export function DetailResult({ price, total, personData }) {
   if (price.perkg) {
     for (const [key, value] of Object.entries(personData)) {
       person.push({
-        name: value.id,
+        name: value.name,
         value: (totalPrice * percent * value.value) / total,
         key: key,
       });

@@ -19,7 +19,8 @@ const App = () => {
   function addList(x, name, val) {
     dispatchData({
       type: "SET_PERSON_DATA",
-      payload: { ...data.personData, [x]: { id: name, value: val } },
+      payload: { name: name, value: val },
+      id: x,
     });
   }
 
@@ -72,8 +73,10 @@ function dataReducer(state, action) {
   switch (action.type) {
     case "SET_PERSON_NUMBER":
       return { ...state, personNumber: action.payload };
+
     case "SET_TOTAL":
       return { ...state, total: action.payload };
+
     case "SET_PRICE":
       return {
         ...state,
@@ -82,8 +85,16 @@ function dataReducer(state, action) {
           percent: action.payload.target[1].value,
         },
       };
+
     case "SET_PERSON_DATA":
-      return { ...state, personData: action.payload };
+      return {
+        ...state,
+        personData: {
+          ...state.personData,
+          [action.id]: action.payload,
+        },
+      };
+
     case "REMOVE_PERSON_DATA":
       return {
         ...state,
