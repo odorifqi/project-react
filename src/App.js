@@ -9,7 +9,7 @@ const App = () => {
   const [data, dispatchData] = useReducer(dataReducer, {
     total: 0,
     price: { perkg: 0, percent: 0 },
-    personData: [],
+    personData: {},
   });
 
   function getPrice(e) {
@@ -19,7 +19,7 @@ const App = () => {
   function addList(x, name, val) {
     dispatchData({
       type: "SET_PERSON_DATA",
-      payload: [...data.personData, { id: name + "_" + x, value: val }],
+      payload: { ...data.personData, [x]: { id: name, value: val } },
     });
   }
 
