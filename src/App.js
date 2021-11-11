@@ -1,9 +1,9 @@
 import "./App.css";
 import { useEffect, useReducer } from "react";
 import { DateToday } from "./component/Date";
-import { DetailInput } from "./component/DetailInput";
-import { DetailResult } from "./component/DetailResult";
-import { InputPerson } from "./component/InputPerson";
+import { DetailInput } from "./component/Detail/DetailInput";
+import { DetailResult } from "./component/Detail/DetailResult";
+import { InputPerson } from "./component/Person/PersonIndex";
 
 const App = () => {
   const [data, dispatchData] = useReducer(dataReducer, {
@@ -45,11 +45,16 @@ const App = () => {
         <DateToday />
       </div>
       <div id="main">
-        <div className="main-div">
+        <div className="main-div wider">
           <InputPerson addList={addList} removeList={removeList} />
-          <h2>Total: {data.total} kg</h2>
+          <div id="div-total-weight">
+            <p className="highlight" style={{ fontSize: "1.7em" }}>
+              Total
+            </p>
+            <p id="total">{data.total} kg</p>
+          </div>
         </div>
-        <div className="main-div">
+        <div className="main-div wider">
           <DetailInput getPrice={getPrice} />
           <DetailResult
             price={data.price}

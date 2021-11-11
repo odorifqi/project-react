@@ -27,7 +27,7 @@ export function DetailResult({ price, total, personData }) {
 }
 
 function PerPerson({ person }) {
-  return person.map((x) => <ListPerson x={x} key={x.key} />);
+  return person.map((x) => (<><ListPerson x={x} key={x.key} /><hr/></>));
 }
 
 function ListPerson({ x }) {
@@ -43,7 +43,7 @@ function ListPerson({ x }) {
 
 function SubDR({ children, title }) {
   return (
-    <div>
+    <div className='sub-dr'>
       <p className="highlight">{title}</p>
       <div className="sub-result-div">
         <p id="priceTotal" className="result-text">
