@@ -28,7 +28,7 @@ export const InputPerson = ({ addList, removeList }) => {
       </div>
       {personList.map((p) => (
         <PersonObj
-          key={`person_${p.key+1}`}
+          key={`person_${p.key + 1}`}
           i={p.key}
           addList={handleAddList}
           removeList={handleRemoveList}

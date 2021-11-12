@@ -6,11 +6,11 @@ export function DetailResult({ price, total, personData }) {
   const person = [];
 
   if (price.perkg) {
-    for (const [key, value] of Object.entries(personData)) {
+    for (const key in personData) {
       person.push({
-        name: value.name,
-        value: (totalPrice * percent * value.value) / total,
-        key: key,
+        name: personData[key].name,
+        value: (totalPrice * percent * personData[key].value) / total,
+        key: personData[key].id,
       });
     }
   }
@@ -20,30 +20,28 @@ export function DetailResult({ price, total, personData }) {
       <SubDR title="Hasil total">Rp{totalPrice.toLocaleString("id-ID")}</SubDR>
       <SubDR title="Pendapatan">Rp{percentPrice.toLocaleString("id-ID")}</SubDR>
       <SubDR title="Pendapatan per pihak">
-        <PerPerson person={person} />
+        {person.map((x) => (
+          <ListPerson x={x} key={`list_${x.key + 1}`} />
+        ))}
       </SubDR>
     </div>
   );
 }
 
-function PerPerson({ person }) {
-  return person.map((x) => (<><ListPerson x={x} key={x.key} /><hr/></>));
-}
-
 function ListPerson({ x }) {
   return (
-    <>
+    <div style={{ paddingTop: "10px" }}>
       <span>
         {x.name || "unknown"}: Rp{x.value.toLocaleString("id-ID")}
       </span>
-      <br />
-    </>
+      <hr />
+    </div>
   );
 }
 
 function SubDR({ children, title }) {
   return (
-    <div className='sub-dr'>
+    <div className="sub-dr">
       <p className="highlight">{title}</p>
       <div className="sub-result-div">
         <p id="priceTotal" className="result-text">
